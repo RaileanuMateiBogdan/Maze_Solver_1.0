@@ -1,129 +1,240 @@
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
 
-# C extensions
-*.so
 
-# Distribution / packaging
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-pip-wheel-metadata/
-share/python-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
+import time
 
-# PyInstaller
-#  Usually these files are written by a python script from a template
-#  before PyInstaller builds the exe, so as to inject date/other infos into it.
-*.manifest
-*.spec
+M = [
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 0, 1, 0, 1, 0, 0, 0, 0, 1],
+    [1, 0, 1, 0, 1, 1, 1, 1, 0, 1],
+    [1, 0, 1, 0, 1, 0, 0, 0, 0, 1],
+    [1, 0, 1, 0, 1, 0, 1, 1, 0, 1],
+    [1, 0, 1, 0, 1, 0, 1, 1, 0, 1],
+    [1, 0, 0, 0, 1, 0, 0, 1, 0, 1],
+    [1, 0, 1, 0, 1, 1, 1, 1, 0, 1],
+    [1, 0, 1, 0, 0, 0, 0, 0, 0, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+]
 
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
+#--------------------------------------------------------------coordinates input
+print("\n", "For your entrance, choose the number of the column and of the row, with values ranging from 1 to", len(M) - 2, ":" )
 
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.nox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.py,cover
-.hypothesis/
-.pytest_cache/
+while True:
+    x = int(input(" & Row number... "))
+    y = int(input("Column number... "))
+    if M[x][y] == 1:
+        print("You spawned in a wall! Please try giving other values.")
+        continue
+    if x>=1 and x<=8 and y>=1 and x<=8: break
 
-# Translations
-*.mo
-*.pot
+loc = list()
+loc.append( [x,y] )
+ex = x
+wy = y
 
-# Django stuff:
-*.log
-local_settings.py
-db.sqlite3
-db.sqlite3-journal
+#---------------------------------------------------------------creating an exit
+print("\n", "Now, for your exit, choose values in the same way as before:", len(M) - 2, ":" )
 
-# Flask stuff:
-instance/
-.webassets-cache
+while True:
+    r = int(input(" & Row number... "))
+    q = int(input("Column number... "))
+    if M[q][r] == 1:
+        print("You spawned in a wall! Please try giving other values.")
+        continue
+    if x>=1 and x<=8 and y>=1 and x<=8: break
 
-# Scrapy stuff:
-.scrapy
+M[r][q]=3
+exit = [r, q]
 
-# Sphinx documentation
-docs/_build/
 
-# PyBuilder
-target/
 
-# Jupyter Notebook
-.ipynb_checkpoints
+#---------------------------------------------------BackWards list item selector
+def bw (a, n ):
+    return loc[len(loc)-n]
 
-# IPython
-profile_default/
-ipython_config.py
 
-# pyenv
-.python-version
+#-----------------------------------------------------------------vector rotator
+while True:
 
-# pipenv
-#   According to pypa/pipenv#598, it is recommended to include Pipfile.lock in version control.
-#   However, in case of collaboration, if having platform-specific dependencies or dependencies
-#   having no cross-platform support, pipenv may install dependencies that don't work, or not
-#   install all needed dependencies.
-#Pipfile.lock
 
-# PEP 582; used by e.g. github.com/David-OConnor/pyflow
-__pypackages__/
+    if len(loc)<2 :
+        if M[x+1][y] == 0 :
+            loc.append([x+1,y])
+            x = x + 1
+#            print("check <2 #1")
+        elif M[x][y-1] == 0 :
+            loc.append([x,y-1])
+            y = y - 1
+#            print("check <2 #2")
+        elif M[x-1][y] == 0 :
+            x = x - 1
+            loc.append([x-1,y])
+#            print("check <2 #3")
+        elif M[x][y+1] == 0 :
+            y = y + 1
+            loc.append([x,y+1])
+#            print("check <2 #4")
 
-# Celery stuff
-celerybeat-schedule
-celerybeat.pid
 
-# SageMath parsed files
-*.sage.py
 
-# Environments
-.env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
+    if bw(loc, 1) == exit :
+        break
+#        print('check broke')
 
-# Spyder project settings
-.spyderproject
-.spyproject
+#    print("opening 1st while")
+    while bw(loc, 1)[0] - bw(loc, 2)[0] == 1 and bw(loc, 1)[1] - bw(loc, 2)[1] == 0 :
+        #time.sleep(0.5)
+#        print("executing  1st while")
+#        print(loc, "\n")
+        if M[x][y] == 3 :
+            break
+        if M[x+1][y] == 3  or M[x][y-1] == 3  or M[x-1][y] == 3  or M[x][y+1] == 3 :
+            loc.append(exit)
+            break
+        if M[x][y-1] == 0 :
+            loc.append([x,y-1])
+#            print('neg-Y')
+            y = y - 1
+            continue
+        elif M[x+1][y] == 0 :
+            loc.append([x+1,y])
+#            print('pos-X')
+            x = x + 1
+            continue
+        elif M[x][y+1] == 0 :
+            loc.append([x,y+1])
+#            print('pos-Y')
+            y = y + 1
+            continue
+        elif M[x-1][y] == 0 :
+            loc.append([x-1,y])
+#            print('neg-X')
+            x = x - 1
+            continue
+        break
 
-# Rope project settings
-.ropeproject
+#    print("opening 2nd while")
+    while bw(loc, 1)[0] - bw(loc, 2)[0] == 0 and bw(loc, 1)[1] - bw(loc, 2)[1] == -1 :
+        #time.sleep(0.5)
+#        print("executing  2nd while")
+#        print(loc, "\n")
+        if M[x][y] == 3 :
+            break
+        if M[x+1][y] == 3  or M[x][y-1] == 3  or M[x-1][y] == 3  or M[x][y+1] == 3 :
+            loc.append(exit)
+            break
+        if M[x-1][y] == 0 :
+            loc.append([x-1,y])
+#            print('neg-X')
+            x = x - 1
+            continue
+        elif M[x][y-1] == 0 :
+            loc.append([x,y-1])
+#            print('pos-Y')
+            y = y - 1
+            continue
+        elif M[x+1][y] == 0 :
+            loc.append([x+1,y])
+#            print('neg-X')
+            x = x + 1
+            continue
+        elif M[x][y+1] == 0 :
+            loc.append([x,y+1])
+#            print('pos-Y')
+            y = y + 1
+            continue
+        break
 
-# mkdocs documentation
-/site
+#    print("opening 3rd while")
+    while bw(loc, 1)[0] - bw(loc, 2)[0] == -1 and bw(loc, 1)[1] - bw(loc, 2)[1] == 0 :
+        #time.sleep(0.5)
+#        print("executing  3rd while")
+#        print(loc, "\n")
+        if M[x][y] == 3 :
+            break
+        if M[x+1][y] == 3  or M[x][y-1] == 3  or M[x-1][y] == 3  or M[x][y+1] == 3 :
+            loc.append(exit)
+            break
+        if M[x][y+1] == 0 :
+            loc.append([x,y+1])
+#            print('pos-Y')
+            y = y + 1
+            continue
+        elif M[x-1][y] == 0 :
+            loc.append([x-1,y])
+#            print('neg-X')
+            x = x - 1
+            continue
+        elif M[x][y-1] == 0 :
+            loc.append([x,y-1])
+#            print('pos-Y')
+            y = y - 1
+            continue
+        elif M[x+1][y] == 0 :
+            loc.append([x+1,y])
+#            print('neg-X')
+            x = x + 1
+            continue
+        break
 
-# mypy
-.mypy_cache/
-.dmypy.json
-dmypy.json
+#    print("opening 4th while")
+    while bw(loc, 1)[0] - bw(loc, 2)[0] == 0 and bw(loc, 1)[1] - bw(loc, 2)[1] == 1 :
+        #time.sleep(0.5)
+#        print("executing  4th while")
+#        print(loc, "\n")
+        if M[x][y] == 3 :
+            break
+        if M[x+1][y] == 3  or M[x][y-1] == 3  or M[x-1][y] == 3  or M[x][y+1] == 3 :
+            loc.append(exit)
+            break
+        if M[x+1][y] == 0 :
+            loc.append([x+1,y])
+#            print('neg-X')
+            x = x + 1
+            continue
+        elif M[x][y+1] == 0 :
+            loc.append([x,y+1])
+#            print('pos-Y')
+            y = y + 1
+            continue
+        elif M[x-1][y] == 0 :
+            loc.append([x-1,y])
+#            print('neg-X')
+            x = x - 1
+            continue
+        elif M[x][y-1] == 0 :
+            loc.append([x,y-1])
+#            print('pos-Y')
+            y = y - 1
+            continue
+        break
 
-# Pyre type checker
-.pyre/
+
+print("\n")
+
+print("You found the exit at coordinates: ", bw(loc, 1))
+
+print('\n')
+
+print("There were ", len(loc), ' steps made in total: ', '\n', loc)
+
+#-----------------------------------------------------------------Maze presenter
+a = M
+a[ex][wy] = 'S'
+for line in range(len(a)):
+    for colm in range(len(a[line])):
+            if a[line][colm]==0 : a[line][colm] = ' '
+            if a[line][colm]==1 : a[line][colm] = 0
+            if a[line][colm]==3 : a[line][colm] = 'E'
+print('\n')
+print(' ', end='    ')
+for n in range( len(a[1]) ) :
+    print (n, end='    ')
+
+count = 0
+for line in range(len(a)):
+    print("\n")
+    print(count, end='    ')
+    for colm in range(len(a[line])):
+            print(a[line][colm], end='    ')
+    count = count + 1
+print('\n')
